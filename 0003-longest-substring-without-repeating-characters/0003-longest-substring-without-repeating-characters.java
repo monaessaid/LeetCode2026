@@ -1,16 +1,18 @@
 class Solution {
     public int lengthOfLongestSubstring(String s) {
         int maxLength = 0;
-        for (int i = 0; i < s.length(); i++) {
-            StringBuilder currentSubstring = new StringBuilder();
-            for (int j = i; j < s.length(); j++) {
-                if (currentSubstring.indexOf(String.valueOf(s.charAt(j))) != -1) {
-                    break;
-                }
-                currentSubstring.append(s.charAt(j));
-                maxLength = Math.max(maxLength, currentSubstring.length());
-                }
+        Map<Character, Integer> visited = new HashMap<>();
+        for (int rp = 0, lp = 0; rp < s.length(); rp++) {
+            char c = s.charAt(rp);
+            // The first part is if there is a repeated character
+            // The second part is to make sure that the repeated character is within the current substring
+            if (visited.containsKey(c) && visited.get(c) >= lp) {
+                // Left pointer should be moved one past where the repeated character is earlier in the sequence 
+                lp = visited.get(c) + 1;
             }
-            return maxLength;
+            maxLength = Math.max(maxLength, rp - lp + 1);
+            visited.put(c, rp);
         }
+        return maxLength;
     }
+}
